@@ -1,5 +1,7 @@
 package com.mbouhda.reddit.controller;
 
+import com.mbouhda.reddit.dto.AuthResponse;
+import com.mbouhda.reddit.dto.LoginRequest;
 import com.mbouhda.reddit.dto.RegisterRequest;
 import com.mbouhda.reddit.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,4 +25,8 @@ public class AuthController {
         return new ResponseEntity<>("Registration successful.", HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public AuthResponse logIn(@RequestBody LoginRequest dto) {
+        return authService.login(dto);
+    }
 }
