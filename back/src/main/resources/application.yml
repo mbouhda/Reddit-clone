@@ -4,7 +4,6 @@ spring:
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     generate-ddl: true
     hibernate:
@@ -16,5 +15,10 @@ spring:
 security:
   jwt:
     token:
-      secret-key: secret-key
-      expire-length: 300000
+      secret: secret-key
+      expire: 300000
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
