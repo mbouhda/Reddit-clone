@@ -2,6 +2,7 @@ package com.mbouhda.reddit.controller;
 
 import com.mbouhda.reddit.dto.AuthResponse;
 import com.mbouhda.reddit.dto.LoginRequest;
+import com.mbouhda.reddit.dto.RefreshTokenDTO;
 import com.mbouhda.reddit.dto.RegisterRequest;
 import com.mbouhda.reddit.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,16 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse logIn(@RequestBody LoginRequest dto) {
         return authService.login(dto);
+    }
+
+    @PostMapping("/refresh-token")
+    public AuthResponse refresh(@RequestBody RefreshTokenDTO dto) {
+        return authService.refreshToken(dto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody RefreshTokenDTO dto) {
+        authService.logout(dto.getRefreshToken());
+        return ResponseEntity.status(HttpStatus.OK).body("Refresh token deleted.");
     }
 }

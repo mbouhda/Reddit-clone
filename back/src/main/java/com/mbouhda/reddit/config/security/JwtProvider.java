@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(username)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setExpiration(new Date(System.currentTimeMillis() + properties.getExpire()))
                 .compact();
     }
 

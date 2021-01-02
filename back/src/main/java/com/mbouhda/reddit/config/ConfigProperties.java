@@ -10,5 +10,5 @@ import org.springframework.context.annotation.Configuration;
 public class ConfigProperties {
 
     private String secret;
-    private Long validity;
+    private Long expire;
 }

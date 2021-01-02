@@ -1,8 +1,10 @@
 package com.mbouhda.reddit.service;
 
+import com.mbouhda.reddit.config.ConfigProperties;
 import com.mbouhda.reddit.config.security.JwtProvider;
 import com.mbouhda.reddit.dto.AuthResponse;
 import com.mbouhda.reddit.dto.LoginRequest;
+import com.mbouhda.reddit.dto.RefreshTokenDTO;
 import com.mbouhda.reddit.dto.RegisterRequest;
 import com.mbouhda.reddit.model.User;
 import com.mbouhda.reddit.repository.UserRepository;
@@ -25,6 +27,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final ConfigProperties properties;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public void signup(RegisterRequest dto) {
@@ -43,6 +47,26 @@ public class AuthService {
 
         String token = jwtProvider.createToken(dto.getUsername());
 
-        return new AuthResponse(token, dto.getUsername());
+        return AuthResponse.builder()
+                .refreshToken(refreshTokenService.generate().getToken())
+                .token(token)
+                .username(dto.getUsername())
+                .expiresAt(Instant.now().plusMillis(properties.getExpire()))
+                .build();
+    }
+
+    public AuthResponse refreshToken(RefreshTokenDTO dto) {
+        refreshTokenService.validate(dto.getRefreshToken());
+        String token = jwtProvider.createToken(dto.getUsername());
+        return AuthResponse.builder()
+                .expiresAt(Instant.now().plusMillis(properties.getExpire()))
+                .username(dto.getUsername())
+                .token(token)
+                .refreshToken(dto.getRefreshToken())
+                .build();
+    }
+
+    public void logout(String token) {
+        refreshTokenService.delete(token);
     }
 }
